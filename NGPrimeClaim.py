@@ -2,9 +2,10 @@
 
 '''
 Python script for extracting and rebuild NeoGeo rom from Prime Gaming implementation made by Code Mystics.
-Orginal bash script by Lionel Cordesses, Tomasz Bednarz, Luca Dal Molin
+Orginal bash script by Lionel Cordesses (lioneltrs), Tomasz Bednarz (tomasz_bednarz_pl), Luca Dal Molin
 The unswizzle function is a python reimplementation of the original C version made by Ack
 source: https://www.arcade-projects.com/threads/samurai-shodown-v-perfect-on-real-hardware.13565/page-2
+Name suggestion by RealRelativeEase, based on vcromclaim by Bryan Cain (Plombo)
 
 Luca Dal Molin, 2023
 '''
@@ -12,6 +13,11 @@ Luca Dal Molin, 2023
 import os
 from tempfile import mkdtemp
 from shutil import rmtree
+from zipfile import ZipFile
+from json import load
+from sys import argv
+
+v=[("system","s2.bin"),("sound","v1.bin"),("z80","m1.bin"),("68k","p1.bin")]
 
 def unswizzle(file,tmpdir):
     offsets=[(4,0),(4,8),(0,0),(0,8)]
@@ -21,10 +27,10 @@ def unswizzle(file,tmpdir):
     outeven=open(os.path.join(tmpdir,"even"),'wb')
     
     while tile:=inf.read(128):
-        for block in range(0,4):
+        for block in range(0,4):    
             for row in range(0,8):
                 planes=[0,0,0,0]
-                offset=offsets[block][0] + offsets[block][0]*8 + row*8
+                offset=offsets[block][0] + offsets[block][1]*8 + row*8
                 
                 for i in range(3,-1,-1):
                     data=tile[offset+i]
@@ -46,50 +52,124 @@ def unswizzle(file,tmpdir):
                     planes[3]=planes[3] | ((data >> 3) & 0x1)
        
                 outodd.write(planes[0].to_bytes(1,byteorder='big',signed=False))
-                outodd.write(planes[1]).to_bytes(1,byteorder='big',signed=False))
-                outeven.write(planes[2]).to_bytes(1,byteorder='big',signed=False))
-                outeven.write(planes[3]).to_bytes(1,byteorder='big',signed=False))
-    
+                outodd.write(planes[1].to_bytes(1,byteorder='big',signed=False))
+                outeven.write(planes[2].to_bytes(1,byteorder='big',signed=False))
+                outeven.write(planes[3].to_bytes(1,byteorder='big',signed=False) )      
     inf.close()
     outodd.close()
     outeven.close()
 
-d=dict()
-v=[("system","s2.bin"),("sound","v1.bin"),("z80","m1.bin"),("68k","p1.bin")]
+def main():
+    if len(argv)==2:
+        if argv[1]=="help":
+            print("Script for extracting Neo Geo ROM from Code Mystics implementation.")
+            print("Usage:")
+            print("\tNGPrimeClaim game srcdir outdir, for extracting the game;")
+            print("\tNGPrimeClaim help, print this message;")
+            print("\tNGPrimeClaim list, print all the games that are supported.")
+        elif argv[1]=="list":
+            for f in os.listdir("json"):
+                print(os.path.splitext(f)[0])
+        else:
+            print("Command not recognized! Use NGPrimeClaim help.")
+    elif len(argv)==4:
+        gamename=argv[1]
+        srcdir=argv[2]
+        outdir=argv[3]
 
-d["kof97"]={
-"id": "232",
-"system": [(0,131072,"s1.s1")],
-"sound": [(0,4194304,"v1.v1"),(4194304,4194304,"v2.v2"),(8388608,4194304,"v2.v2")],
-"z80": [(0,131072,"m1.m1")],
-"68k": [(0,1048576,"p1.p1"),(1048576,4194304,"p2.sp2")],
-"sprite-odd": [(0,8388608,"c1.c1"),(8388608,8388608,"c3.c3"),(16777216,4194304,"c5.c5")],
-"sprite-even": [(0,8388608,"c2.c2"),(8388608,8388608,"c4.c4"),(16777216,4194304,"c6.c6")]
-}
+        if not os.path.exists("json/{}.json".format(gamename)):
+            print("Game not yet implemented.")
+            exit()
 
-srcdir="/home/dalmo/Giochi/lutris/amazon/the-king-of-fighters-97-global-match/drive_c/game/Data/rom/"
-outdir="/home/dalmo/Documenti/goNCommand-main/"
+        if not os.path.exists(srcdir):
+            print("Source dir does not exist.")
+            exit()
 
-tmppath=outdir
+        if not os.path.exists(outdir):
+            try:
+                os.makedirs(outdir,exist_ok=True)
+            except:
+                print("Error on creating output dir.")
+                exit()
 
-unswizzle(os.path.join(srcdir,"c1.bin"),tmppath)
+        tmppath=mkdtemp()
 
-'''
-tmppath=mkdtemp()
+        f=open("json/{}.json".format(gamename))
+        d=load(f)
+        f.close()
 
-if not os.path.exists(outdir):
-    os.makedirs(outdir,exist_ok=True)
+        game_id=d["id"]
 
-for typ,ofile in v:
-    f=open(os.path.join(srcdir,ofile),mode='rb')
-    vector=d["kof97"][typ]
-    for start,size,name in vector:
-        f.seek(start)
-        data=f.read(size)
-        g=open(os.path.join(tmppath,d["kof97"]["id"]+"-"+name),mode='wb')
-        g.write(data)
-        g.close()
-    f.close()
+        for typ,ofile in v:
+            f=open(os.path.join(srcdir,ofile),mode='rb')
+            print("Working on {} files".format(typ))
+            for l in d[typ]:
+                f.seek(l["start"])
+                data=f.read(l["size"])
+                g=open(os.path.join(tmppath,game_id+"-"+l["name"]),mode='wb')
+                g.write(data)
+                g.close()
+            f.close()
 
-#rmtree(tmppath)
-'''
+        print("Start unswizzle...")
+        unswizzle(os.path.join(srcdir,"c1.bin"),tmppath)
+        print("Finish unswizzle...")
+
+        path=os.path.join(tmppath,"odd")
+        f=open(path,mode='rb')
+        print("Working on odd sprites")
+        for l in d["sprite-odd"]:
+            f.seek(l["start"])
+            data=f.read(l["size"])
+            g=open(os.path.join(tmppath,game_id+"-"+l["name"]),mode='wb')
+            g.write(data)
+            g.close()
+        f.close()
+        os.remove(path)
+
+        path=os.path.join(tmppath,"even")
+        f=open(path,mode='rb')
+        print("Working on even sprites")
+        for l in d["sprite-even"]:
+            f.seek(l["start"])
+            data=f.read(l["size"])
+            g=open(os.path.join(tmppath,game_id+"-"+l["name"]),mode='wb')
+            g.write(data)
+            g.close()
+        f.close()
+        os.remove(path)
+
+        z=ZipFile(os.path.join(outdir,"{}.zip").format(gamename),'w')
+        print("Preparing the zip")
+        for f in os.listdir(tmppath):
+            z.write(os.path.join(tmppath,f),f)
+        z.close()
+
+        rmtree(tmppath)
+        print("ROM successfully extracted")
+    else:
+        print("Error on usage! Use NGPrimeClaim help.")
+    
+if __name__=="__main__":
+    main()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
