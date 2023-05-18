@@ -1,0 +1,103 @@
+{
+    "name": "ninjamas",
+    "id": "217",
+    "system":
+    [
+        {
+            "start": 0,
+            "size": 131072,
+            "name": "s1.s1"
+        }
+    ],
+    "sound":
+    [
+        {
+            "start": 0,
+            "size": 4194304,
+            "name": "v1.v1"
+        },
+        {
+            "start": 4194304,
+            "size": 4194304,
+            "name": "v2.v2"
+        }
+    ],
+    "z80":
+    [
+        {
+            "start": 0,
+            "size": 131072,
+            "name": "m1.m1"
+        }
+    ],
+    "68k":
+    [
+        {
+            "start": 0,
+            "size": 1048576,
+            "name": "p1.p1"
+        },
+        {
+            "start": 1048576,
+            "size": 2097152,
+            "name": "p2.sp2"
+        }
+    ],
+    "sprite-odd":
+    [
+        {
+            "start": 0,
+            "size": 4194304,
+            "name": "c1.c1"
+        },
+        {
+            "start": 4194304,
+            "size": 4194304,
+            "name": "c3.c3"
+        },
+        {
+            "start": 8388608,
+            "size": 4194304,
+            "name": "c5.c5"
+        },
+        {
+            "start": 12582912,
+            "size": 4194304,
+            "name": "c7.c7"
+        }
+    ],
+    "sprite-even":
+    [
+        {
+            "start": 0,
+            "size": 4194304,
+            "name": "c2.c2"
+        },
+        {
+            "start": 4194304,
+            "size": 4194304,
+            "name": "c4.c4"
+        },
+        {
+            "start": 8388608,
+            "size": 4194304,
+            "name": "c6.c6"
+        },
+        {
+            "start": 12582912,
+            "size": 4194304,
+            "name": "c8.c8"
+        }
+    ],
+    "corrections":
+    {
+        "singleByte":
+        [
+            {
+                "file": "p1.p1",
+                "position": 277,
+                "value": 0
+            }
+        ]
+    }
+}

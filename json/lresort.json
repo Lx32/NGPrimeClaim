@@ -1,0 +1,70 @@
+{
+    "name": "lresort",
+    "id": "024",
+    "system":
+    [
+        {
+            "start": 0,
+            "size": 131072,
+            "name": "s1.s1"
+        }
+    ],
+    "sound":
+    [
+        {
+            "start": 0,
+            "size": 1048576,
+            "name": "v1.v1"
+        },
+        {
+            "start": 1048576,
+            "size": 1048576,
+            "name": "v2.v2"
+        }
+    ],
+    "z80":
+    [
+        {
+            "start": 0,
+            "size": 65536,
+            "name": "m1.m1"
+        }
+    ],
+    "68k":
+    [
+        {
+            "start": 0,
+            "size": 524288,
+            "name": "p1.p1"
+        }
+    ],
+    "sprite-odd":
+    [
+        {
+            "start": 0,
+            "size": 1048576,
+            "name": "c1.c1"
+        },
+        {
+            "start": 1048576,
+            "size": 524288,
+            "name": "c3.c3"
+        }
+    ],
+    "sprite-even":
+    [
+        {
+            "start": 0,
+            "size": 1048576,
+            "name": "c2.c2"
+        },
+        {
+            "start": 1048576,
+            "size": 524288,
+            "name": "c4.c4"
+        }
+    ],
+    "corrections":
+    {
+    }
+}
