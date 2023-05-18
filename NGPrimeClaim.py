@@ -54,7 +54,7 @@ def unswizzle(file,tmpdir):
                 outodd.write(planes[0].to_bytes(1,byteorder='big',signed=False))
                 outodd.write(planes[1].to_bytes(1,byteorder='big',signed=False))
                 outeven.write(planes[2].to_bytes(1,byteorder='big',signed=False))
-                outeven.write(planes[3].to_bytes(1,byteorder='big',signed=False) )      
+                outeven.write(planes[3].to_bytes(1,byteorder='big',signed=False))      
     inf.close()
     outodd.close()
     outeven.close()
@@ -138,6 +138,29 @@ def main():
             g.close()
         f.close()
         os.remove(path)
+        
+        print("Doing eventual corrections.")
+        for typ in d["corrections"]:
+            if typ=="singleByte":
+                for l in d["corrections"]["singleByte"]:
+                    f=open(os.path.join(tmppath,game_id+"-"+l["file"]),mode='ab')
+                    f.seek(l["position"])
+                    f.write(l["value"].to_bytes(1,byteorder='big',signed=False))
+                    f.close()
+            elif typ=="addBlank":
+                zero=0
+                for l in d["corrections"]["addBlank"]:
+                    f=open(os.path.join(tmppath,game_id+"-"+l["file"]),mode='ab')
+                    f.write(zero.to_bytes(l["size"],byteorder='big',signed=False))
+                    f.close()
+            elif typ="double":
+                for l in d["corrections"]["double"]:
+                    f=open(os.path.join(tmppath,game_id+"-"+l["file"]),mode='rb')
+                    db=f.read(l["dim"])
+                    f.close()
+                    f=open(os.path.join(tmppath,game_id+"-"+l["file"]),mode='ab')
+                    db=f.write(db)
+                    f.close()
 
         z=ZipFile(os.path.join(outdir,"{}.zip").format(gamename),'w')
         print("Preparing the zip")
@@ -152,6 +175,8 @@ def main():
     
 if __name__=="__main__":
     main()
+    
+    
     
     
     
