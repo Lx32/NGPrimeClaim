@@ -1,56 +1,18 @@
-# goNCommand
+# NGPrimeClaim
 
-goNCommand is a set of Bash scripts to convert twelve games (Ninja Commando, Ghost Pilots, Art of Fighting 3, Magician Lord, Ninja Master's, Crossed Swords, Sengoku, Super Sidekicks, The Last Blade 2, Robo Army, Samurai Shodown IV, Last Resort) to romsets for Final Burn Alpha, MAME or FBNeo.
-
-## Installation
-
-Put these files in a directory of your choice:
-
-    goNCommand
-    goGPilots
-    goAoF3
-    goML
-    goNM
-    goCS
-    goSengoku
-    goSuperS
-    goLB2
-    goRA
-    goSS4_a
-    goLR
-    ss_unswizzle.c
-
-Then compile ss_unswizzle.c:
-
-    gcc -o ss_unswizzle ss_unswizzle.c
+NGPrimeClaim is a python script that convert Neo Geo roms from Code Msytics implementations to romsets for Final Burn Alpha, MAME or FBNeo.
 
 ## Usage
-1. Set the path MY_RAW_ROMS_DIR to point to the directory where Ninja Commando (or another supported game) is installed. In this directory, you will see files such as c1.bin and m1.bin. Example :
-
-    MY_RAW_ROMS_DIR=/home/lionel2/provi/amazon/ninja_commando/rom
-
-2. Set the path MY_OUT_ROM_DIR_1 to a temporary directory of your choice.
-3. Run one of the eight scripts: 
-
-```
-./goNCommand
-```
-or
-```
-./goGPilots
-```
-or ./goAoF3 or ./goML or ./goNM or ./goCS or ./goSengoku or ./goSuperS or ./goLB2 or ./goRA or ./goSS4_a or /goLR.
-
-You should get a ncommand.zip file (or gpilots.zip, or aof3.zip, or maglord.zip, or ninjamas.zip, or crsword.zip, or sengoku.zip, or ssideki.zip, or  lastbld2.zip, or roboarmy.zip, or samsho4.zip, or lresort.zip) in the directory where the script is.
+1. Download the NGPrimeClaim.py file and the json folder and put all in the same directory.
+2. Run with:
+    > ./NGPrimeClaim.py game srcdir outdir
 
 ## Background and information
-The C code ss_unswizzle.c was written by ark (the script goNCommand links to the original post where I found it).
+The script creates all file that match FBNeo CRC32. The original bash script is from lioneltrs https://github.com/lioneltrs/goNCommand. Original contributors are:
 
-The script goNCommand creates all but one file that match FBNeo CRC32. The file 050-p1.p1 does not match the CRC32 given by FBNeo, and I do not know how to fix this, as it is a simple copy of the original file. The game seems to run fine: feel free to investigate.
-
-Update: a friend noticed that 050-p1.p1 differs from the "known" file only at one address. I updated all the scripts, as it seems to be the case for all of them.
-
-Thank you to contributors Lx32, RedundantCich for theirs scripts.
+1. lineltrs
+2. RedundantCich
+3. Lx32
 
 Other useful scripts to extract and convert games are available from:
 + https://gitlab.com/vaiski/romextract
@@ -61,7 +23,7 @@ Other useful scripts to extract and convert games are available from:
 
 ## Contributing
 
-Feel free to fork this code (and solve the Metal Slug 4 or the King of Fighters 2003 problems).
+Feel free to fork this code or the original bash one (and solve the Metal Slug 4 or the King of Fighters 2003 problems).
 
 ## License
 
@@ -74,7 +36,3 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
-
-
-
-
