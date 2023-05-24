@@ -153,7 +153,7 @@ def main():
                     f=open(os.path.join(tmppath,game_id+"-"+l["file"]),mode='ab')
                     f.write(zero.to_bytes(l["size"],byteorder='big',signed=False))
                     f.close()
-            elif typ="double":
+            elif typ=="double":
                 for l in d["corrections"]["double"]:
                     f=open(os.path.join(tmppath,game_id+"-"+l["file"]),mode='rb')
                     db=f.read(l["dim"])
