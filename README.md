@@ -23,7 +23,7 @@ Other useful scripts to extract and convert games are available from:
 
 ## Contributing
 
-Feel free to fork this code or the original bash one (and solve the Metal Slug 4 or the King of Fighters 2003 problems).
+Feel free to fork this code or the original bash one (and solve the Metal Slug 4 or the King of Fighters 2003 problems). Also there is to implement Super Sidekicks II in this version because the original script is a lot different.
 
 ## License
 
